@@ -72,6 +72,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
     while (cursor) {
       if (cursor.value.expires !== 0) {
         const exists: boolean = fnc(atob(cursor.key.toString()))
+        console.log("ran exists function", exists,atob(cursor.key.toString()) )
         if (exists) {
           const data = cursor.value
           data.expires = 0
@@ -85,25 +86,6 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
       cursor = await cursor.continue();
     }
   }
-
-  // async updateThumbnail(url: string): Promise<void> {
-  //   const encodedUrl = btoa(url)
-  //   const tnObjectStore = this.db.transaction("thumbnails", "readwrite").objectStore("thumbnails");
-  //   let tnCursor = await tnObjectStore.openCursor()
-  //   while (tnCursor) {
-  //     //console.log("cursor", tnCursor.value, encodedUrl)
-  //     if (tnCursor.value.expires !== 0 && tnCursor.key === encodedUrl) {
-  //       const data = tnCursor.value
-  //       tnObjectStore.put({
-  //           expires: 0,
-  //           thumbnail: data.thumbnail
-  //         },
-  //         tnCursor.key)
-  //     }
-  //     tnCursor = await tnCursor.continue();
-  //   }
-  // }
-
 
 }
 
