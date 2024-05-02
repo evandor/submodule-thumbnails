@@ -89,7 +89,6 @@ export function useThumbnailsService() {
   }
 
   const initListeners = () => {
-    console.log("*** init Listeners ***")
     if (inBexMode()) {
       console.debug(" ...initializing thumbnails Listeners")
       chrome.runtime.onMessage.addListener(onMessageListener)
