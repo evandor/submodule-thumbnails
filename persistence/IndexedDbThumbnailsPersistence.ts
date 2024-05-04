@@ -22,7 +22,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   }
 
   private async initDatabase(): Promise<IDBPDatabase> {
-    console.debug(" about to initialize indexedDB")
+    console.debug(" about to initialize indexedDB (Thumbnails)")
     const ctx = this
     return await openDB("thumbnailsDB", 1, {
       upgrade(db) {
