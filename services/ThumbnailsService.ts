@@ -1,5 +1,5 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
-import {useUtils} from "src/services/Utils";
+import {useUtils} from "src/core/services/Utils";
 import {useWindowsStore} from "src/windows/stores/windowsStore";
 import {usePermissionsStore} from "stores/permissionsStore";
 import throttledQueue from "throttled-queue";
