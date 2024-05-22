@@ -1,9 +1,11 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
 import {useUtils} from "src/core/services/Utils";
 import {useWindowsStore} from "src/windows/stores/windowsStore";
-import {usePermissionsStore} from "stores/permissionsStore";
+// import {usePermissionsStore} from "stores/permissionsStore";
 import throttledQueue from "throttled-queue";
+import {usePermissionsStore} from "stores/permissionsStore";
 import {useSettingsStore} from "stores/settingsStore";
+// import {useSettingsStore} from "stores/settingsStore";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
 
