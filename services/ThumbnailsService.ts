@@ -17,7 +17,7 @@ export function useThumbnailsService() {
 
 
   const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-    console.log("===> msg", request)
+    //console.log("===> msg", request)
     if (request.msg === 'captureThumbnail') {
       const screenShotWindow = useWindowsStore().screenshotWindow
       handleCapture(sender, screenShotWindow, sendResponse)
