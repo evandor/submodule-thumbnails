@@ -79,7 +79,7 @@ export function useThumbnailsService() {
   }
 
   const getThumbnailFor = (url: string | undefined) => {
-   return url ? db.getThumbnail(url) : Promise.reject(`no thumbnail for url ${url}`)
+   return (url && db) ? db.getThumbnail(url) : Promise.reject(`no thumbnail for url ${url}`)
   }
 
   const removeThumbnailsFor = (url: string): Promise<any> => {
