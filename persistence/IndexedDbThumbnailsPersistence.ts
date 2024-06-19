@@ -16,7 +16,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   }
 
   async init() {
-    console.log(" ...initializing thumbmails (IndexedDbThumbnailsPersistence)")
+    console.debug(" ...initializing thumbnails (IndexedDbThumbnailsPersistence)")
     this.db = await this.initDatabase()
     return Promise.resolve()
   }

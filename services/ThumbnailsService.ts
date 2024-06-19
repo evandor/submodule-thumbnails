@@ -1,11 +1,9 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
 import {useUtils} from "src/core/services/Utils";
 import {useWindowsStore} from "src/windows/stores/windowsStore";
-// import {usePermissionsStore} from "stores/permissionsStore";
 import throttledQueue from "throttled-queue";
 import {usePermissionsStore} from "stores/permissionsStore";
 import {useSettingsStore} from "stores/settingsStore";
-// import {useSettingsStore} from "stores/settingsStore";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
 
@@ -15,6 +13,12 @@ export function useThumbnailsService() {
 
   const throttleOnePerSecond = throttledQueue(1, 1000, true)
 
+  const init = async (storage: ThumbnailsPersistence) => {
+    console.debug(" ...initializing thumbnailsService as", storage.getServiceName())
+    db = storage
+    await db.init()
+    initListeners()
+  }
 
   const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
     //console.log("===> msg", request)
@@ -61,13 +65,6 @@ export function useThumbnailsService() {
       // })
 
     }
-  }
-
-  const init = async (storage: ThumbnailsPersistence) => {
-    console.log(" ...initializing thumbnailsService as", storage.getServiceName())
-    db = storage
-    await db.init()
-    initListeners()
   }
 
   const saveThumbnailFor = (tab: chrome.tabs.Tab | undefined, thumbnail: string) => {
