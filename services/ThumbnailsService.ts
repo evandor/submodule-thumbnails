@@ -43,7 +43,7 @@ export function useThumbnailsService() {
       if (!browserTab.id) {
         return
       }
-
+debugger
       if (browserTab.url && browserTab.url.startsWith("https://shared.tabsets.net")) {
         return
       }
