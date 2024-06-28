@@ -1,6 +1,5 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
 import {useUtils} from "src/core/services/Utils";
-import {useWindowsStore} from "src/windows/stores/windowsStore";
 import throttledQueue from "throttled-queue";
 import {usePermissionsStore} from "stores/permissionsStore";
 import {useSettingsStore} from "stores/settingsStore";
@@ -23,8 +22,9 @@ export function useThumbnailsService() {
   const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
     //console.log("===> msg", request)
     if (request.msg === 'captureThumbnail') {
-      const screenShotWindow = useWindowsStore().screenshotWindow
-      handleCapture(sender, screenShotWindow, sendResponse)
+      //const screenShotWindow = useWindowsStore().screenshotWindow
+      //handleCapture(sender, screenShotWindow, sendResponse)
+      handleCapture(sender, null as unknown as number, sendResponse)
     }
   }
 

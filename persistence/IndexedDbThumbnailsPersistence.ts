@@ -1,9 +1,6 @@
-import {IDBPDatabase, openDB, deleteDB} from "idb";
-import _ from "lodash";
+import {IDBPDatabase, openDB} from "idb";
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
 import {EXPIRE_DATA_PERIOD_IN_MINUTES} from "boot/constants";
-import {Tab} from "src/tabsets/models/Tab";
-import {uid} from "quasar";
 
 class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
@@ -50,8 +47,10 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
         expires: new Date().getTime() + 1000 * 60 * EXPIRE_DATA_PERIOD_IN_MINUTES,
         thumbnail: thumbnail
       }, encodedTabUrl)
-        .then(() => console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`))
-        .catch(err => console.error(new Tab(uid(), tab), err))
+        .then(() => {
+          //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
+        })
+        .catch(err => console.error(err))
     }
     return Promise.reject("no url provided in tab")
   }
@@ -72,7 +71,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
     while (cursor) {
       if (cursor.value.expires !== 0) {
         const exists: boolean = fnc(atob(cursor.key.toString()))
-        console.log("ran exists function", exists,atob(cursor.key.toString()) )
+        console.log("ran exists function", exists, atob(cursor.key.toString()))
         if (exists) {
           const data = cursor.value
           data.expires = 0
