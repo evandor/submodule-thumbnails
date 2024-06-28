@@ -118,7 +118,7 @@ debugger
             chrome.windows.get(windowId, {}, (w: chrome.windows.Window) => {
               if (chrome.runtime.lastError) {
                 console.log("got error", chrome.runtime.lastError)
-                useWindowsStore().screenshotWindow = null as unknown as number
+                //useWindowsStore().screenshotWindow = null as unknown as number
                 chrome.tabs.captureVisibleTab(
                   {},
                   function (dataUrl) {
