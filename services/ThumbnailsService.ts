@@ -43,7 +43,7 @@ export function useThumbnailsService() {
       if (!browserTab.id) {
         return
       }
-      if (browserTab.url && browserTab.url.startsWith("https://shared.tabsets.net")) {
+      if (browserTab.url && (browserTab.url.startsWith("chrome") || browserTab.url.startsWith("https://shared.tabsets.net"))) {
         return
       }
 
@@ -55,7 +55,7 @@ export function useThumbnailsService() {
       // @ts-ignore
       chrome.scripting.executeScript({
         target: {tabId: browserTab.id || 0, allFrames: false},
-        files: ["content-script-thumbnails.js"] //["tabsets-content-script.js","content-script-thumbnails.js"],
+        files: ["content-script-thumbnails.js"]
       }, (callback: any) => {
         if (chrome.runtime.lastError) {
           console.warn("could not execute script: " + chrome.runtime.lastError.message, changeInfo.url);
@@ -75,7 +75,7 @@ export function useThumbnailsService() {
   }
 
   const getThumbnailFor = (url: string | undefined) => {
-   return (url && db) ? db.getThumbnail(url) : Promise.reject(`no thumbnail for url ${url}`)
+    return (url && db) ? db.getThumbnail(url) : Promise.reject(`no thumbnail for url ${url}`)
   }
 
   const removeThumbnailsFor = (url: string): Promise<any> => {
