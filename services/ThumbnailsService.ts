@@ -1,7 +1,6 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
 import {useUtils} from "src/core/services/Utils";
 import throttledQueue from "throttled-queue";
-import {usePermissionsStore} from "stores/permissionsStore";
 import {useSettingsStore} from "stores/settingsStore";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
@@ -106,7 +105,7 @@ export function useThumbnailsService() {
     //   return
     // }
 
-    throttleOnePerSecond(async () => {
+    /*throttleOnePerSecond(async () => {
       console.debug("capturing tab...")
       const allUrlsPermission = usePermissionsStore().hasAllOrigins()
       //chrome.permissions.getAll((res) => console.log("res", res))
@@ -146,7 +145,8 @@ export function useThumbnailsService() {
         }, 1000)
       }
 
-    })
+    })*/
+    throw new Error ("should not end up here")
 
   }
 
