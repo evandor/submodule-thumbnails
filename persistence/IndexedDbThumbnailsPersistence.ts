@@ -9,17 +9,16 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   private db: IDBPDatabase = null as unknown as IDBPDatabase
 
   getServiceName(): string {
-    return "IndexedDbThumbnailsPersistence";
+    return this.constructor.name
   }
 
   async init() {
-    console.debug(" ...initializing thumbnails (IndexedDbThumbnailsPersistence)")
     this.db = await this.initDatabase()
+    console.debug(` ...initialized thumbnails: ${this.getServiceName()}`,'✅')
     return Promise.resolve()
   }
 
   private async initDatabase(): Promise<IDBPDatabase> {
-    console.debug(" ...about to initialize indexedDB (Thumbnails)")
     const ctx = this
     return await openDB("thumbnailsDB", 1, {
       upgrade(db) {

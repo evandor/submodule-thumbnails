@@ -12,10 +12,10 @@ export function useThumbnailsService() {
   const throttleOnePerSecond = throttledQueue(1, 1000, true)
 
   const init = async (storage: ThumbnailsPersistence) => {
-    console.debug(" ...initializing thumbnailsService as", storage.getServiceName())
     db = storage
     await db.init()
     initListeners()
+    console.debug(` ...initialized thumbnails: Service`,'✅')
   }
 
   const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
@@ -87,7 +87,6 @@ export function useThumbnailsService() {
 
   const initListeners = () => {
     if (inBexMode()) {
-      console.debug(" ...initializing thumbnails Listeners")
       chrome.runtime.onMessage.addListener(onMessageListener)
       chrome.tabs.onUpdated.addListener(onUpdatedListener)
     }
