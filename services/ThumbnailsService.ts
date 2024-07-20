@@ -15,7 +15,7 @@ export function useThumbnailsService() {
     db = storage
     await db.init()
     initListeners()
-    console.debug(` ...initialized thumbnails: Service`,'✅')
+    console.debug(` ...initialized thumbnails: Service`, '✅')
   }
 
   const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
@@ -104,11 +104,11 @@ export function useThumbnailsService() {
     //   return
     // }
 
-    /*throttleOnePerSecond(async () => {
-      console.debug("capturing tab...")
-      const allUrlsPermission = usePermissionsStore().hasAllOrigins()
-      //chrome.permissions.getAll((res) => console.log("res", res))
-      if (allUrlsPermission) {
+    throttleOnePerSecond(async () => {
+        console.debug("capturing tab...")
+        // const allUrlsPermission = usePermissionsStore().hasAllOrigins()
+        //chrome.permissions.getAll((res) => console.log("res", res))
+        // if (allUrlsPermission) {
         setTimeout(async () => {
           if (windowId != null) {
             console.log("capturing thumbnail", windowId)
@@ -142,11 +142,10 @@ export function useThumbnailsService() {
             );
           }
         }, 1000)
+        // }
+
       }
-
-    })*/
-    throw new Error ("should not end up here")
-
+    )
   }
 
   const handleCaptureCallback = (dataUrl: string, sender: chrome.runtime.MessageSender, sendResponse: any) => {
