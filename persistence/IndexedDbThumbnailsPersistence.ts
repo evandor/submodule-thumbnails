@@ -39,9 +39,8 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
     return this.cleanUpExpired(fnc)
   }
 
-  async saveThumbnail(tab: chrome.tabs.Tab, thumbnail: string): Promise<void> {
-    if (tab.url) {
-      const encodedTabUrl = btoa(tab.url)
+  async saveThumbnail(url: string, thumbnail: string): Promise<void> {
+      const encodedTabUrl = btoa(url)
       return this.db.put(this.STORE_IDENT, {
         expires: new Date().getTime() + 1000 * 60 * EXPIRE_DATA_PERIOD_IN_MINUTES,
         thumbnail: thumbnail
@@ -50,8 +49,6 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
           //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
         })
         .catch(err => console.error(err))
-    }
-    return Promise.reject("no url provided in tab")
   }
 
   getThumbnail(url: string): Promise<string> {

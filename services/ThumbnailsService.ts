@@ -65,12 +65,10 @@ export function useThumbnailsService() {
     }
   }
 
-  const saveThumbnailFor = (tab: chrome.tabs.Tab | undefined, thumbnail: string) => {
-    if (tab && tab.url) {
-      db.saveThumbnail(tab, thumbnail)
-        //.then(() => console.log("added thumbnail"))
-        .catch(err => console.log("err", err))
-    }
+  const saveThumbnailFor = (url: string, thumbnail: string) => {
+    db.saveThumbnail(url, thumbnail)
+      //.then(() => console.log("added thumbnail"))
+      .catch(err => console.log("err", err))
   }
 
   const getThumbnailFor = (url: string | undefined) => {
@@ -119,7 +117,7 @@ export function useThumbnailsService() {
                 chrome.tabs.captureVisibleTab(
                   {},
                   function (dataUrl) {
-                    handleCaptureCallback(dataUrl, sender, sendResponse);
+                    handleCaptureCallback('not used', dataUrl)
                   }
                 );
               } else {
@@ -127,7 +125,7 @@ export function useThumbnailsService() {
                   windowId,
                   {},
                   function (dataUrl) {
-                    handleCaptureCallback(dataUrl, sender, sendResponse);
+                    handleCaptureCallback('not used', dataUrl);
                   }
                 );
               }
@@ -137,7 +135,7 @@ export function useThumbnailsService() {
             chrome.tabs.captureVisibleTab(
               {},
               function (dataUrl) {
-                handleCaptureCallback(dataUrl, sender, sendResponse);
+                handleCaptureCallback('not used', dataUrl);
               }
             );
           }
@@ -148,7 +146,7 @@ export function useThumbnailsService() {
     )
   }
 
-  const handleCaptureCallback = (dataUrl: string, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+  const handleCaptureCallback = (url: string, dataUrl: string) => {
     if (chrome.runtime.lastError) {
       console.log("got error", chrome.runtime.lastError)
       return
@@ -176,8 +174,8 @@ export function useThumbnailsService() {
       octx.drawImage(img, 0, 0, oc.width, oc.height);
 
       //console.log(`capturing ${oc.width}x${oc.height} thumbnail for ${sender.tab?.id}, ${Math.round(oc.toDataURL().length / 1024)}kB`)
-      saveThumbnailFor(sender.tab, oc.toDataURL())
-      sendResponse({imgSrc: dataUrl});
+      saveThumbnailFor(url, oc.toDataURL())
+      //sendResponse({imgSrc: dataUrl});
     }
     img.src = dataUrl//"https://i.imgur.com/SHo6Fub.jpg";
   }
@@ -187,7 +185,8 @@ export function useThumbnailsService() {
     saveThumbnailFor,
     removeThumbnailsFor,
     cleanUpThumbnails,
-    getThumbnailFor
+    getThumbnailFor,
+    handleCaptureCallback
   }
 
 }
