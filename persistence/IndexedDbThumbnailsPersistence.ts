@@ -53,6 +53,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
   getThumbnail(url: string): Promise<string> {
     const encodedUrl = btoa(url)
+    console.log("getting", encodedUrl, url)
     return this.db.get(this.STORE_IDENT, encodedUrl)
   }
 
