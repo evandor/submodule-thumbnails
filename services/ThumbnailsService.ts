@@ -14,86 +14,86 @@ export function useThumbnailsService() {
   const init = async (storage: ThumbnailsPersistence) => {
     db = storage
     await db.init()
-    initListeners()
+    //initListeners()
     console.debug(` ...initialized thumbnails: Service`, '✅')
   }
 
-  const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-    //console.log("===> msg", request)
-    if (request.msg === 'captureThumbnail') {
-      //const screenShotWindow = useWindowsStore().screenshotWindow
-      //handleCapture(sender, screenShotWindow, sendResponse)
-      handleCapture(sender, null as unknown as number, sendResponse)
-    }
-  }
+  // const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+  //   //console.log("===> msg", request)
+  //   if (request.msg === 'captureThumbnail') {
+  //     //const screenShotWindow = useWindowsStore().screenshotWindow
+  //     //handleCapture(sender, screenShotWindow, sendResponse)
+  //     handleCapture(sender, null as unknown as number, sendResponse)
+  //   }
+  // }
 
-  const onUpdatedListener = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, browserTab: chrome.tabs.Tab) => {
-    const selfUrl = chrome.runtime.getURL("")
-    if (browserTab.url?.startsWith(selfUrl)) {
-      return
-    }
+  // const onUpdatedListener = (tabId: number, changeInfo: chrome.tabs.TabChangeInfo, browserTab: chrome.tabs.Tab) => {
+  //   const selfUrl = chrome.runtime.getURL("")
+  //   if (browserTab.url?.startsWith(selfUrl)) {
+  //     return
+  //   }
+  //
+  //   if (!changeInfo.status || (Object.keys(changeInfo).length > 1)) {
+  //     //console.debug(`onUpdated:   tab ${number}: >>> ${JSON.stringify(info)} <<<`)
+  //     //this.handleUpdateInjectScripts(tabsStore.pendingTabset as Tabset, info, chromeTab)
+  //     if (changeInfo.status !== "loading") {
+  //       return
+  //     }
+  //     if (!browserTab.id) {
+  //       return
+  //     }
+  //     if (browserTab.url && (browserTab.url.startsWith("chrome") || browserTab.url.startsWith("https://shared.tabsets.net"))) {
+  //       return
+  //     }
+  //
+  //     // chrome.tabs.get(browserTab.id, (chromeTab: chrome.tabs.Tab) => {
+  //     //   if (chrome.runtime.lastError) {
+  //     //     console.warn("got runtime error:" + chrome.runtime.lastError);
+  //     //   }
+  //
+  //     // @ts-ignore
+  //     chrome.scripting.executeScript({
+  //       target: {tabId: browserTab.id || 0, allFrames: false},
+  //       files: ["content-script-thumbnails.js"]
+  //     }, (callback: any) => {
+  //       if (chrome.runtime.lastError) {
+  //         console.warn("could not execute script: " + chrome.runtime.lastError.message, changeInfo.url);
+  //       }
+  //     });
+  //     // })
+  //
+  //   }
+  // }
 
-    if (!changeInfo.status || (Object.keys(changeInfo).length > 1)) {
-      //console.debug(`onUpdated:   tab ${number}: >>> ${JSON.stringify(info)} <<<`)
-      //this.handleUpdateInjectScripts(tabsStore.pendingTabset as Tabset, info, chromeTab)
-      if (changeInfo.status !== "loading") {
-        return
-      }
-      if (!browserTab.id) {
-        return
-      }
-      if (browserTab.url && (browserTab.url.startsWith("chrome") || browserTab.url.startsWith("https://shared.tabsets.net"))) {
-        return
-      }
-
-      // chrome.tabs.get(browserTab.id, (chromeTab: chrome.tabs.Tab) => {
-      //   if (chrome.runtime.lastError) {
-      //     console.warn("got runtime error:" + chrome.runtime.lastError);
-      //   }
-
-      // @ts-ignore
-      chrome.scripting.executeScript({
-        target: {tabId: browserTab.id || 0, allFrames: false},
-        files: ["content-script-thumbnails.js"]
-      }, (callback: any) => {
-        if (chrome.runtime.lastError) {
-          console.warn("could not execute script: " + chrome.runtime.lastError.message, changeInfo.url);
-        }
-      });
-      // })
-
-    }
-  }
-
-  const saveThumbnailFor = (url: string, thumbnail: string) => {
-    db.saveThumbnail(url, thumbnail)
+  const saveThumbnailFor = (tabId: string, thumbnail: string) => {
+    db.saveThumbnail(tabId, thumbnail)
       //.then(() => console.log("added thumbnail"))
       .catch(err => console.log("err", err))
   }
 
-  const getThumbnailFor = (url: string | undefined) => {
-    return (url && db) ? db.getThumbnail(url) : Promise.reject(`no thumbnail for url ${url}`)
+  const getThumbnailFor = (tabId: string | undefined) => {
+    return (tabId && db) ? db.getThumbnail(tabId) : Promise.reject(`no thumbnail for tabId ${tabId}`)
   }
 
-  const removeThumbnailsFor = (url: string): Promise<any> => {
-    return db.deleteThumbnail(url)
+  const removeThumbnailsFor = (tabId: string): Promise<any> => {
+    return db.deleteThumbnail(tabId)
   }
 
   const cleanUpThumbnails = (fnc: (url: string) => boolean) => {
     return db.cleanUpThumbnails(fnc)
   }
 
-  const initListeners = () => {
-    if (inBexMode()) {
-      chrome.runtime.onMessage.addListener(onMessageListener)
-      chrome.tabs.onUpdated.addListener(onUpdatedListener)
-    }
-  }
+  // const initListeners = () => {
+  //   if (inBexMode()) {
+  //     chrome.runtime.onMessage.addListener(onMessageListener)
+  //     chrome.tabs.onUpdated.addListener(onUpdatedListener)
+  //   }
+  // }
 
-  async function resetListeners() {
-    chrome.runtime.onMessage.removeListener(onMessageListener)
-    chrome.tabs.onUpdated.removeListener(onUpdatedListener)
-  }
+  // async function resetListeners() {
+  //   chrome.runtime.onMessage.removeListener(onMessageListener)
+  //   chrome.tabs.onUpdated.removeListener(onUpdatedListener)
+  // }
 
   const handleCapture = (sender: chrome.runtime.MessageSender, windowId: number, sendResponse: any) => {
 
@@ -146,7 +146,7 @@ export function useThumbnailsService() {
     )
   }
 
-  const handleCaptureCallback = (url: string, dataUrl: string) => {
+  const handleCaptureCallback = (tabId: string, dataUrl: string) => {
     if (chrome.runtime.lastError) {
       console.log("got error", chrome.runtime.lastError)
       return
@@ -174,7 +174,7 @@ export function useThumbnailsService() {
       octx.drawImage(img, 0, 0, oc.width, oc.height);
 
       //console.log(`capturing ${oc.width}x${oc.height} thumbnail for ${sender.tab?.id}, ${Math.round(oc.toDataURL().length / 1024)}kB`)
-      saveThumbnailFor(url, oc.toDataURL())
+      saveThumbnailFor(tabId, oc.toDataURL())
       //sendResponse({imgSrc: dataUrl});
     }
     img.src = dataUrl//"https://i.imgur.com/SHo6Fub.jpg";

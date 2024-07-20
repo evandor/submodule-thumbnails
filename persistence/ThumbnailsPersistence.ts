@@ -5,10 +5,9 @@ interface ThumbnailsPersistence {
 
   init(): Promise<any>
 
-  //updateThumbnail(url: string):Promise<void>
-  saveThumbnail(url: string, thumbnail: string):Promise<void>
-  getThumbnail(url: string):Promise<string>
-  deleteThumbnail(url: string):Promise<void>
+  saveThumbnail(tabId: string, thumbnail: string):Promise<void>
+  getThumbnail(tabId: string):Promise<string>
+  deleteThumbnail(tabId: string):Promise<void>
   cleanUpThumbnails(fnc: (url: string) => boolean):Promise<void>
 
   compactDb(): Promise<any>

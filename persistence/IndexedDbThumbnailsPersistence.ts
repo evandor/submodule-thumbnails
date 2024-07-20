@@ -39,27 +39,24 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
     return this.cleanUpExpired(fnc)
   }
 
-  async saveThumbnail(url: string, thumbnail: string): Promise<void> {
-      const encodedTabUrl = btoa(url)
+  // TODO remove expires logic
+  async saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
       return this.db.put(this.STORE_IDENT, {
         expires: new Date().getTime() + 1000 * 60 * EXPIRE_DATA_PERIOD_IN_MINUTES,
         thumbnail: thumbnail
-      }, encodedTabUrl)
+      }, tabId)
         .then(() => {
           //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
         })
         .catch(err => console.error(err))
   }
 
-  getThumbnail(url: string): Promise<string> {
-    const encodedUrl = btoa(url)
-    console.log("getting", encodedUrl, url)
-    return this.db.get(this.STORE_IDENT, encodedUrl)
+  getThumbnail(tabId: string): Promise<string> {
+    return this.db.get(this.STORE_IDENT, tabId)
   }
 
-
-  deleteThumbnail(url: string): Promise<void> {
-    return this.db.delete(this.STORE_IDENT, btoa(url))
+  deleteThumbnail(tabId: string): Promise<void> {
+    return this.db.delete(this.STORE_IDENT, tabId)
   }
 
   private async cleanUpExpired(fnc: (url: string) => boolean): Promise<void> {
