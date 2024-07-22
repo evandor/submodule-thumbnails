@@ -41,10 +41,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
   // TODO remove expires logic
   async saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
-      return this.db.put(this.STORE_IDENT, {
-        expires: new Date().getTime() + 1000 * 60 * EXPIRE_DATA_PERIOD_IN_MINUTES,
-        thumbnail: thumbnail
-      }, tabId)
+      return this.db.put(this.STORE_IDENT, thumbnail, tabId)
         .then(() => {
           //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
         })
