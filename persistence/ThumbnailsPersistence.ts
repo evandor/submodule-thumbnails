@@ -1,17 +1,21 @@
+import Persistence from "src/core/persistence/Persistence";
 
-interface ThumbnailsPersistence {
+abstract class ThumbnailsPersistence implements Persistence {
 
-  getServiceName(): string
+  getServiceName(): string {
+    return this.constructor.name
+  }
 
-  init(): Promise<any>
+  abstract init(): Promise<any>
 
-  saveThumbnail(tabId: string, thumbnail: string):Promise<void>
-  getThumbnail(tabId: string):Promise<string>
-  deleteThumbnail(tabId: string):Promise<void>
-  cleanUpThumbnails(fnc: (url: string) => boolean):Promise<void>
+  abstract saveThumbnail(tabId: string, thumbnail: string):Promise<void>
+  abstract getThumbnail(tabId: string):Promise<string>
+  abstract deleteThumbnail(tabId: string):Promise<void>
+  abstract cleanUpThumbnails(fnc: (url: string) => boolean):Promise<void>
 
-  compactDb(): Promise<any>
-
+  compactDb(): Promise<any> {
+    return Promise.resolve("noOp");
+  }
 }
 
 export default ThumbnailsPersistence

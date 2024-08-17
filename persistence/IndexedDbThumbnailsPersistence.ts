@@ -1,6 +1,5 @@
 import {IDBPDatabase, openDB} from "idb";
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
-import {EXPIRE_DATA_PERIOD_IN_MINUTES} from "boot/constants";
 
 class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
