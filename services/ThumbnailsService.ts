@@ -2,6 +2,7 @@ import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersiste
 import {useUtils} from "src/core/services/Utils";
 import throttledQueue from "throttled-queue";
 import {useSettingsStore} from "stores/settingsStore";
+import AppEventDispatcher from "src/app/AppEventDispatcher";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
 
@@ -83,24 +84,7 @@ export function useThumbnailsService() {
     return db.cleanUpThumbnails(fnc)
   }
 
-  // const initListeners = () => {
-  //   if (inBexMode()) {
-  //     chrome.runtime.onMessage.addListener(onMessageListener)
-  //     chrome.tabs.onUpdated.addListener(onUpdatedListener)
-  //   }
-  // }
-
-  // async function resetListeners() {
-  //   chrome.runtime.onMessage.removeListener(onMessageListener)
-  //   chrome.tabs.onUpdated.removeListener(onUpdatedListener)
-  // }
-
   const handleCapture = (sender: chrome.runtime.MessageSender, windowId: number, sendResponse: any) => {
-
-    // if (!this.thumbnailsActive) {
-    //   console.log("capturing thumbnail: not active")
-    //   return
-    // }
 
     throttleOnePerSecond(async () => {
         console.debug("capturing tab...")
@@ -166,7 +150,6 @@ export function useThumbnailsService() {
 
       var oc = document.createElement('canvas')
       var octx = oc.getContext('2d')
-
       let quality = useSettingsStore().thumbnailQuality as number
       oc.width = Math.round(img.width * 0.5 * quality / 100)
       oc.height = Math.round(img.height * 0.5 * quality / 100)
@@ -180,13 +163,30 @@ export function useThumbnailsService() {
     img.src = dataUrl//"https://i.imgur.com/SHo6Fub.jpg";
   }
 
+  const captureVisibleTab = (tabId: string) => {
+    try {
+      chrome.tabs.captureVisibleTab(
+        {},
+        function (dataUrl) {
+          AppEventDispatcher.dispatchEvent('capture-screenshot', {
+            tabId: tabId,
+            data: dataUrl
+          })
+        }
+      )
+    } catch (err) {
+      console.warn("got error when saving thumbnail", err)
+    }
+  }
+
   return {
     init,
     saveThumbnailFor,
     removeThumbnailsFor,
     cleanUpThumbnails,
     getThumbnailFor,
-    handleCaptureCallback
+    handleCaptureCallback,
+    captureVisibleTab
   }
 
 }
