@@ -84,51 +84,51 @@ export function useThumbnailsService() {
     return db.cleanUpThumbnails(fnc)
   }
 
-  const handleCapture = (sender: chrome.runtime.MessageSender, windowId: number, sendResponse: any) => {
-
-    throttleOnePerSecond(async () => {
-        console.debug("capturing tab...")
-        // const allUrlsPermission = usePermissionsStore().hasAllOrigins()
-        //chrome.permissions.getAll((res) => console.log("res", res))
-        // if (allUrlsPermission) {
-        setTimeout(async () => {
-          if (windowId != null) {
-            console.log("capturing thumbnail", windowId)
-            chrome.windows.get(windowId, {}, (w: chrome.windows.Window) => {
-              if (chrome.runtime.lastError) {
-                console.log("got error", chrome.runtime.lastError)
-                //useWindowsStore().screenshotWindow = null as unknown as number
-                chrome.tabs.captureVisibleTab(
-                  {},
-                  function (dataUrl) {
-                    handleCaptureCallback('not used', dataUrl)
-                  }
-                );
-              } else {
-                chrome.tabs.captureVisibleTab(
-                  windowId,
-                  {},
-                  function (dataUrl) {
-                    handleCaptureCallback('not used', dataUrl);
-                  }
-                );
-              }
-            })
-          } else {
-            console.log("capturing thumbnail for window", windowId)
-            chrome.tabs.captureVisibleTab(
-              {},
-              function (dataUrl) {
-                handleCaptureCallback('not used', dataUrl);
-              }
-            );
-          }
-        }, 1000)
-        // }
-
-      }
-    )
-  }
+  // const handleCapture = (sender: chrome.runtime.MessageSender, windowId: number, sendResponse: any) => {
+  //
+  //   throttleOnePerSecond(async () => {
+  //       console.debug("capturing tab...")
+  //       // const allUrlsPermission = usePermissionsStore().hasAllOrigins()
+  //       //chrome.permissions.getAll((res) => console.log("res", res))
+  //       // if (allUrlsPermission) {
+  //       setTimeout(async () => {
+  //         if (windowId != null) {
+  //           console.log("capturing thumbnail", windowId)
+  //           chrome.windows.get(windowId, {}, (w: chrome.windows.Window) => {
+  //             if (chrome.runtime.lastError) {
+  //               console.log("got error", chrome.runtime.lastError)
+  //               //useWindowsStore().screenshotWindow = null as unknown as number
+  //               chrome.tabs.captureVisibleTab(
+  //                 {},
+  //                 function (dataUrl) {
+  //                   handleCaptureCallback('not used', dataUrl)
+  //                 }
+  //               );
+  //             } else {
+  //               chrome.tabs.captureVisibleTab(
+  //                 windowId,
+  //                 {},
+  //                 function (dataUrl) {
+  //                   handleCaptureCallback('not used', dataUrl);
+  //                 }
+  //               );
+  //             }
+  //           })
+  //         } else {
+  //           console.log("capturing thumbnail for window", windowId)
+  //           chrome.tabs.captureVisibleTab(
+  //             {},
+  //             function (dataUrl) {
+  //               handleCaptureCallback('not used', dataUrl);
+  //             }
+  //           );
+  //         }
+  //       }, 1000)
+  //       // }
+  //
+  //     }
+  //   )
+  // }
 
   const handleCaptureCallback = (tabId: string, dataUrl: string) => {
     if (chrome.runtime.lastError) {
@@ -138,7 +138,8 @@ export function useThumbnailsService() {
     if (dataUrl === undefined) {
       return
     }
-    //console.log("capturing thumbnail for ", sender.tab?.id, Math.round(dataUrl.length / 1024) + "kB")
+    console.log("hiert...")
+    console.log(`capturing thumbnail for ${tabId}, length ${Math.round(dataUrl.length / 1024) + "kB"}`)
 
     var img = new Image();
 
@@ -163,17 +164,21 @@ export function useThumbnailsService() {
     img.src = dataUrl//"https://i.imgur.com/SHo6Fub.jpg";
   }
 
-  const captureVisibleTab = (tabId: string) => {
+  const captureVisibleTab = (
+    tabId: string,
+    fnc: (tabId: string, dataUrl: string) => void = function (tabId: string, dataUrl) {
+      AppEventDispatcher.dispatchEvent('capture-screenshot', {
+        tabId: tabId,
+        data: dataUrl
+      })
+    }) => {
+
     try {
-      chrome.tabs.captureVisibleTab(
-        {},
-        function (dataUrl) {
-          AppEventDispatcher.dispatchEvent('capture-screenshot', {
-            tabId: tabId,
-            data: dataUrl
-          })
-        }
-      )
+      chrome.tabs.captureVisibleTab({format: "png"}, (dataUrl: string) => {
+        console.log("hier2", dataUrl.length, fnc, tabId)
+        // @ts-ignore
+        fnc.call<any, string[], void>(this, tabId, dataUrl)
+      })
     } catch (err) {
       console.warn("got error when saving thumbnail", err)
     }
