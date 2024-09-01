@@ -1,0 +1,18 @@
+name: Merge from localstorage to main
+on:
+  push:
+    branches:
+      - 'localstorage'
+jobs:
+  sync-branch-firefox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge localstorage -> main
+        uses: devmasx/merge-branch@v1.3.1
+        with:
+          type: now
+          from_branch: localstorage
+          target_branch: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
