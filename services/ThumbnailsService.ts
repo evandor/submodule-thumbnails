@@ -132,7 +132,6 @@ export function useThumbnailsService() {
     if (dataUrl === undefined) {
       return
     }
-    console.log("hiert...")
     console.log(`capturing thumbnail for ${tabId}, length ${Math.round(dataUrl.length / 1024) + "kB"}`)
 
     var img = new Image();
@@ -169,7 +168,7 @@ export function useThumbnailsService() {
 
     try {
       chrome.tabs.captureVisibleTab({format: "png"}, (dataUrl: string) => {
-        console.log("hier2", dataUrl.length, fnc, tabId)
+        //console.log("hier2", dataUrl.length, fnc, tabId)
         // @ts-ignore
         fnc.call<any, string[], void>(this, tabId, dataUrl)
       })
