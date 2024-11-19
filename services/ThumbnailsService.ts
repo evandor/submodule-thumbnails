@@ -1,16 +1,10 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
-import {useUtils} from "src/core/services/Utils";
-import throttledQueue from "throttled-queue";
 import {useSettingsStore} from "stores/settingsStore";
 import AppEventDispatcher from "src/app/AppEventDispatcher";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
 
 export function useThumbnailsService() {
-
-  const {inBexMode} = useUtils()
-
-  const throttleOnePerSecond = throttledQueue(1, 1000, true)
 
   const init = async (storage: ThumbnailsPersistence) => {
     db = storage
@@ -81,7 +75,7 @@ export function useThumbnailsService() {
   }
 
   const cleanUpThumbnails = (fnc: (url: string) => boolean) => {
-    return db.cleanUpThumbnails(fnc)
+    return //db.cleanUpThumbnails(fnc)
   }
 
   // const handleCapture = (sender: chrome.runtime.MessageSender, windowId: number, sendResponse: any) => {
