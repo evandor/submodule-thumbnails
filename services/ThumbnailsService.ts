@@ -1,5 +1,5 @@
 import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
-import {useSettingsStore} from "stores/settingsStore";
+import {useSettingsStore} from "src/stores/settingsStore";
 import AppEventDispatcher from "src/app/AppEventDispatcher";
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
