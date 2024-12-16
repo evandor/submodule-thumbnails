@@ -46,7 +46,7 @@ export function useThumbnailsService() {
   //     //     console.warn("got runtime error:" + chrome.runtime.lastError);
   //     //   }
   //
-  //     // @ts-ignore
+  //     // @ts-expect-error
   //     chrome.scripting.executeScript({
   //       target: {tabId: browserTab.id || 0, allFrames: false},
   //       files: ["content-script-thumbnails.js"]
@@ -147,7 +147,7 @@ export function useThumbnailsService() {
       let quality = useSettingsStore().thumbnailQuality as number
       oc.width = Math.round(img.width * 0.5 * quality / 100)
       oc.height = Math.round(img.height * 0.5 * quality / 100)
-      // @ts-ignore
+      // @ts-expect-error
       octx.drawImage(img, 0, 0, oc.width, oc.height);
 
       //console.log(`capturing ${oc.width}x${oc.height} thumbnail for ${sender.tab?.id}, ${Math.round(oc.toDataURL().length / 1024)}kB`)
@@ -169,7 +169,7 @@ export function useThumbnailsService() {
     try {
       chrome.tabs.captureVisibleTab({format: "png"}, (dataUrl: string) => {
         //console.log("hier2", dataUrl.length, fnc, tabId)
-        // @ts-ignore
+        // @ts-expect-error
         fnc.call<any, string[], void>(this, tabId, dataUrl)
       })
     } catch (err) {
