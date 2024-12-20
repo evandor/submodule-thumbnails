@@ -132,7 +132,7 @@ export function useThumbnailsService() {
     if (dataUrl === undefined) {
       return
     }
-    console.log(`capturing thumbnail for ${tabId}, length ${Math.round(dataUrl.length / 1024) + "kB"}`)
+    console.log(`capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + "kB"}`)
 
     var img = new Image();
 
