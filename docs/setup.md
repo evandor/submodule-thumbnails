@@ -16,4 +16,3 @@ dispatchEvent(name: string, params: object) {
   }
 }
 ```
-

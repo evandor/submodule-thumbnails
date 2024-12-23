@@ -1,11 +1,10 @@
-import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
-import {useSettingsStore} from "src/stores/settingsStore";
-import AppEventDispatcher from "src/app/AppEventDispatcher";
+import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
+import { useSettingsStore } from 'src/stores/settingsStore'
+import AppEventDispatcher from 'src/app/AppEventDispatcher'
 
 let db: ThumbnailsPersistence = null as unknown as ThumbnailsPersistence
 
 export function useThumbnailsService() {
-
   const init = async (storage: ThumbnailsPersistence) => {
     db = storage
     await db.init()
@@ -63,11 +62,11 @@ export function useThumbnailsService() {
   const saveThumbnailFor = (tabId: string, thumbnail: string) => {
     db.saveThumbnail(tabId, thumbnail)
       //.then(() => console.log("added thumbnail"))
-      .catch(err => console.log("err", err))
+      .catch((err) => console.log('err', err))
   }
 
   const getThumbnailFor = (tabId: string | undefined) => {
-    return (tabId && db) ? db.getThumbnail(tabId) : Promise.reject(`no thumbnail for tabId ${tabId}`)
+    return tabId && db ? db.getThumbnail(tabId) : Promise.reject(`no thumbnail for tabId ${tabId}`)
   }
 
   const removeThumbnailsFor = (tabId: string): Promise<any> => {
@@ -126,35 +125,36 @@ export function useThumbnailsService() {
 
   const handleCaptureCallback = (tabId: string, dataUrl: string) => {
     if (chrome.runtime.lastError) {
-      console.log("got error", chrome.runtime.lastError)
+      console.log('got error', chrome.runtime.lastError)
       return
     }
     if (dataUrl === undefined) {
       return
     }
-    console.log(`capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + "kB"}`)
+    console.log(
+      `capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + 'kB'}`,
+    )
 
-    var img = new Image();
+    var img = new Image()
 
     // https://stackoverflow.com/questions/19262141/resize-image-with-javascript-canvas-smoothly
     img.onload = function () {
-
       // set size proportional to image
       //canvas.height = canvas.width * (img.height / img.width);
 
       var oc = document.createElement('canvas')
       var octx = oc.getContext('2d')
       let quality = useSettingsStore().thumbnailQuality as number
-      oc.width = Math.round(img.width * 0.5 * quality / 100)
-      oc.height = Math.round(img.height * 0.5 * quality / 100)
+      oc.width = Math.round((img.width * 0.5 * quality) / 100)
+      oc.height = Math.round((img.height * 0.5 * quality) / 100)
       // @ts-expect-error TODO
-      octx.drawImage(img, 0, 0, oc.width, oc.height);
+      octx.drawImage(img, 0, 0, oc.width, oc.height)
 
       //console.log(`capturing ${oc.width}x${oc.height} thumbnail for ${sender.tab?.id}, ${Math.round(oc.toDataURL().length / 1024)}kB`)
       saveThumbnailFor(tabId, oc.toDataURL())
       //sendResponse({imgSrc: dataUrl});
     }
-    img.src = dataUrl//"https://i.imgur.com/SHo6Fub.jpg";
+    img.src = dataUrl //"https://i.imgur.com/SHo6Fub.jpg";
   }
 
   const captureVisibleTab = (
@@ -162,18 +162,18 @@ export function useThumbnailsService() {
     fnc: (tabId: string, dataUrl: string) => void = function (tabId: string, dataUrl) {
       AppEventDispatcher.dispatchEvent('capture-screenshot', {
         tabId: tabId,
-        data: dataUrl
+        data: dataUrl,
       })
-    }) => {
-
+    },
+  ) => {
     try {
-      chrome.tabs.captureVisibleTab({format: "png"}, (dataUrl: string) => {
+      chrome.tabs.captureVisibleTab({ format: 'png' }, (dataUrl: string) => {
         //console.log("hier2", dataUrl.length, fnc, tabId)
         // @ts-expect-error TODO
         fnc.call<any, string[], void>(this, tabId, dataUrl)
       })
     } catch (err) {
-      console.warn("got error when saving thumbnail", err)
+      console.warn('got error when saving thumbnail', err)
     }
   }
 
@@ -184,9 +184,6 @@ export function useThumbnailsService() {
     cleanUpThumbnails,
     getThumbnailFor,
     handleCaptureCallback,
-    captureVisibleTab
+    captureVisibleTab,
   }
-
 }
-
-

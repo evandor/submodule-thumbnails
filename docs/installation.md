@@ -16,4 +16,3 @@ git submodule add -b main https://github.com/evandor/submodule-thumbnails.git sr
 ### main
 
 the default branch, used e.g. in tabsets
-

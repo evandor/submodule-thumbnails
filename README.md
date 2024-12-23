@@ -2,4 +2,4 @@
 
 used as submodule in
 
-* tabsets
+- tabsets

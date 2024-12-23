@@ -5,7 +5,7 @@ to a tabset are stored.
 
 used as submodule in
 
-* [tabsets](https://tabsets.net)
-* ...
+- [tabsets](https://tabsets.net)
+- ...
 
 Tests are found in the tabsets project.

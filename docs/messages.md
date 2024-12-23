@@ -6,6 +6,6 @@ none
 
 ### Out
 
-* feature-activated
-* feature-deactivated
-* reload-application
+- feature-activated
+- feature-deactivated
+- reload-application

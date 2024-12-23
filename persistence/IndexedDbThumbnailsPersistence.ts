@@ -1,9 +1,8 @@
-import {IDBPDatabase, openDB} from "idb";
-import ThumbnailsPersistence from "src/thumbnails/persistence/ThumbnailsPersistence";
+import { IDBPDatabase, openDB } from 'idb'
+import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
 
 class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
-
-  private STORE_IDENT = 'thumbnails';
+  private STORE_IDENT = 'thumbnails'
 
   private db: IDBPDatabase = null as unknown as IDBPDatabase
 
@@ -13,25 +12,25 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
   async init() {
     this.db = await this.initDatabase()
-    console.debug(` ...initialized thumbnails: ${this.getServiceName()}`,'✅')
+    console.debug(` ...initialized thumbnails: ${this.getServiceName()}`, '✅')
     return Promise.resolve()
   }
 
   private async initDatabase(): Promise<IDBPDatabase> {
     const ctx = this
-    return await openDB("thumbnailsDB", 1, {
+    return await openDB('thumbnailsDB', 1, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(ctx.STORE_IDENT)) {
-          console.log("creating db " + ctx.STORE_IDENT)
-          let store = db.createObjectStore(ctx.STORE_IDENT);
-          store.createIndex("expires", "expires", {unique: false});
+          console.log('creating db ' + ctx.STORE_IDENT)
+          let store = db.createObjectStore(ctx.STORE_IDENT)
+          store.createIndex('expires', 'expires', { unique: false })
         }
-      }
-    });
+      },
+    })
   }
 
   compactDb(): Promise<any> {
-    return Promise.resolve(undefined);
+    return Promise.resolve(undefined)
   }
 
   async cleanUpThumbnails(fnc: (url: string) => boolean): Promise<void> {
@@ -40,11 +39,12 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
   // TODO remove expires logic
   async saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
-      return this.db.put(this.STORE_IDENT, thumbnail, tabId)
-        .then(() => {
-          //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
-        })
-        .catch(err => console.error(err))
+    return this.db
+      .put(this.STORE_IDENT, thumbnail, tabId)
+      .then(() => {
+        //console.debug(new Tab(uid(), tab), `saved thumbnail for url ${tab.url}, ${Math.round(thumbnail.length / 1024)}kB`)
+      })
+      .catch((err) => console.error(err))
   }
 
   getThumbnail(tabId: string): Promise<string> {
@@ -56,12 +56,14 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   }
 
   private async cleanUpExpired(fnc: (url: string) => boolean): Promise<void> {
-    const objectStore = this.db.transaction(this.STORE_IDENT, "readwrite").objectStore(this.STORE_IDENT);
+    const objectStore = this.db
+      .transaction(this.STORE_IDENT, 'readwrite')
+      .objectStore(this.STORE_IDENT)
     let cursor = await objectStore.openCursor()
     while (cursor) {
       if (cursor.value.expires !== 0) {
         const exists: boolean = fnc(atob(cursor.key.toString()))
-        console.log("ran exists function", exists, atob(cursor.key.toString()))
+        console.log('ran exists function', exists, atob(cursor.key.toString()))
         if (exists) {
           const data = cursor.value
           data.expires = 0
@@ -72,10 +74,9 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
           }
         }
       }
-      cursor = await cursor.continue();
+      cursor = await cursor.continue()
     }
   }
-
 }
 
 export default new IndexedDbThumbnailsPersistence()
