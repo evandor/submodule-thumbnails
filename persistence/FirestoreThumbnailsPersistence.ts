@@ -1,8 +1,8 @@
-import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
+import { doc, updateDoc } from 'firebase/firestore'
 import { deleteObject, getBytes, getMetadata, listAll, ref, uploadString } from 'firebase/storage'
 import FirebaseServices from 'src/services/firebase/FirebaseServices'
+import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
 import { useAuthStore } from 'stores/authStore'
-import { doc, updateDoc } from 'firebase/firestore'
 
 class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   async init() {
