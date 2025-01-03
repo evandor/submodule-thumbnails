@@ -18,10 +18,7 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   }
 
   async getThumbnail(tabId: string): Promise<string> {
-    const storageReference = ref(
-      FirebaseServices.getStorage(),
-      `users/${useAuthStore().user.uid}/thumbnails/${tabId}`,
-    )
+    const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
     const res = await getBytes(storageReference)
     var decoder = new TextDecoder('utf-8')
     return decoder.decode(res)
@@ -32,20 +29,14 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   // }
 
   async deleteThumbnail(tabId: string): Promise<void> {
-    const storageReference = ref(
-      FirebaseServices.getStorage(),
-      `users/${useAuthStore().user.uid}/thumbnails/${tabId}`,
-    )
+    const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
     await deleteObject(storageReference)
     await this.updateStorageQuote()
     return Promise.resolve()
   }
 
   private saveBlobToStorage(tabId: string, data: string) {
-    const storageReference = ref(
-      FirebaseServices.getStorage(),
-      `users/${useAuthStore().user.uid}/thumbnails/${tabId}`,
-    )
+    const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
     uploadString(storageReference, data).then((snapshot: any) => {
       console.log('Uploaded thumbnail!')
     })
@@ -60,10 +51,7 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   }
 
   private async updateStorageQuote() {
-    const userThumnnails = ref(
-      FirebaseServices.getStorage(),
-      `users/${useAuthStore().user.uid}/thumbnails`,
-    )
+    const userThumnnails = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails`)
     const res = await listAll(userThumnnails)
     let size = 0
     for (const itemRef of res.items) {
