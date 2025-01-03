@@ -56,9 +56,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   }
 
   private async cleanUpExpired(fnc: (url: string) => boolean): Promise<void> {
-    const objectStore = this.db
-      .transaction(this.STORE_IDENT, 'readwrite')
-      .objectStore(this.STORE_IDENT)
+    const objectStore = this.db.transaction(this.STORE_IDENT, 'readwrite').objectStore(this.STORE_IDENT)
     let cursor = await objectStore.openCursor()
     while (cursor) {
       if (cursor.value.expires !== 0) {
