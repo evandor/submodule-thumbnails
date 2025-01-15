@@ -12,7 +12,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
 
   async init() {
     this.db = await this.initDatabase()
-    console.debug(` ...initialized thumbnails: ${this.getServiceName()}`, '✅')
+    // console.debug(` ...initialized thumbnails: ${this.getServiceName()}`, '✅')
     return Promise.resolve()
   }
 
