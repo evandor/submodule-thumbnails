@@ -9,7 +9,7 @@ export function useThumbnailsService() {
     db = storage
     await db.init()
     //initListeners()
-    console.debug(` ...initialized thumbnails: Service`, '✅')
+    // console.debug(` ...initialized thumbnails: Service`, '✅')
   }
 
   // const onMessageListener = (request: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {

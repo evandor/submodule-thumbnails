@@ -6,7 +6,7 @@ import { useAuthStore } from 'stores/authStore'
 
 class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   async init() {
-    console.debug(` ...initialized thumbnails: ${this.getServiceName()}`, '✅')
+    // console.debug(` ...initialized thumbnails: ${this.getServiceName()}`, '✅')
     return Promise.resolve('')
   }
 
