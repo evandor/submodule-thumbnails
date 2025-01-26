@@ -1,4 +1,4 @@
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
 import { deleteObject, getBytes, getMetadata, listAll, ref, uploadString } from 'firebase/storage'
 import FirebaseServices from 'src/services/firebase/FirebaseServices'
 import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
@@ -11,9 +11,9 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
   }
 
   saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
-    console.log(`saving Thumbnail ${tabId}`)
+    //console.log(`saving Thumbnail ${tabId}`)
     this.saveBlobToStorage(tabId, thumbnail)
-    this.updateStorageQuote()
+    this.updateStorageQuote().catch((err) => console.warn('error with updateStorageQuote', err))
     return Promise.resolve()
   }
 
@@ -24,10 +24,6 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
     return decoder.decode(res)
   }
 
-  // cleanUpThumbnails(fnc: (url: string) => boolean): Promise<void> {
-  //   return Promise.reject("cleanUpThumbnails not implemented in FirestoreThumbnailsPersistence");
-  // }
-
   async deleteThumbnail(tabId: string): Promise<void> {
     const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
     await deleteObject(storageReference)
@@ -37,16 +33,17 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
 
   private saveBlobToStorage(tabId: string, data: string) {
     const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
-    uploadString(storageReference, data).then((snapshot: any) => {
-      console.log('Uploaded thumbnail!')
+    uploadString(storageReference, data).catch((err: any) => {
+      console.warn('Uploaded thumbnail error', err)
     })
     return tabId
   }
 
   private async saveQuote(quote: object) {
     if (useAuthStore().user?.uid) {
-      const userDoc = doc(FirebaseServices.getFirestore(), 'users', useAuthStore().user?.uid)
-      await updateDoc(userDoc, quote)
+      const userDoc = doc(FirebaseServices.getFirestore(), 'users', useAuthStore().user.uid)
+      //console.log('userDoc', userDoc, useAuthStore().user?.uid)
+      await setDoc(userDoc, quote, { merge: true })
     }
   }
 
@@ -62,7 +59,7 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
         // ignore, document might have been deleted
       }
     }
-    //console.log("size", size)
+    //console.log('size', size)
     await this.saveQuote({ thumbnails: Math.round((100 * size) / (1024 * 1024)) / 100 })
   }
 }

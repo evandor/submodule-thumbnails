@@ -61,7 +61,7 @@ export function useThumbnailsService() {
 
   const saveThumbnailFor = (tabId: string, thumbnail: string) => {
     db.saveThumbnail(tabId, thumbnail)
-      //.then(() => console.log("added thumbnail"))
+      //.then(() => console.log('added thumbnail'))
       .catch((err) => console.log('err', err))
   }
 
@@ -131,7 +131,7 @@ export function useThumbnailsService() {
     if (dataUrl === undefined) {
       return
     }
-    console.log(`capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + 'kB'}`)
+    //console.log(`capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + 'kB'}`)
 
     var img = new Image()
 

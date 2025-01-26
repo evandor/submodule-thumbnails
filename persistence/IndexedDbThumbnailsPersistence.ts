@@ -60,8 +60,8 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
     let cursor = await objectStore.openCursor()
     while (cursor) {
       if (cursor.value.expires !== 0) {
-        const exists: boolean = fnc(atob(cursor.key.toString()))
-        console.log('ran exists function', exists, atob(cursor.key.toString()))
+        const exists: boolean = fnc(atob(cursor.key as string))
+        console.log('ran exists function', exists, atob(cursor.key as string))
         if (exists) {
           const data = cursor.value
           data.expires = 0
