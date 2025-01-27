@@ -7,9 +7,12 @@ abstract class ThumbnailsPersistence implements Persistence {
 
   abstract init(): Promise<any>
 
-  abstract saveThumbnail(tabId: string, thumbnail: string): Promise<void>
-  abstract getThumbnail(tabId: string): Promise<string>
+  abstract saveThumbnail(tabId: string, tabsetId: string, thumbnail: string): Promise<void>
+
+  abstract getThumbnail(tabId: string, userId: string): Promise<string>
+
   abstract deleteThumbnail(tabId: string): Promise<void>
+
   //abstract cleanUpThumbnails(fnc: (url: string) => boolean):Promise<void>
 
   compactDb(): Promise<any> {

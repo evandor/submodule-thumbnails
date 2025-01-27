@@ -1,5 +1,5 @@
 import { doc, setDoc } from 'firebase/firestore'
-import { deleteObject, getBytes, getMetadata, listAll, ref, uploadString } from 'firebase/storage'
+import { deleteObject, getBytes, getMetadata, listAll, ref, StringFormat, uploadString } from 'firebase/storage'
 import FirebaseServices from 'src/services/firebase/FirebaseServices'
 import ThumbnailsPersistence from 'src/thumbnails/persistence/ThumbnailsPersistence'
 import { useAuthStore } from 'stores/authStore'
@@ -10,15 +10,17 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
     return Promise.resolve('')
   }
 
-  saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
-    //console.log(`saving Thumbnail ${tabId}`)
-    this.saveBlobToStorage(tabId, thumbnail)
+  saveThumbnail(tabId: string, tabsetId: string, thumbnail: string): Promise<void> {
+    console.log(`saving Thumbnail ${tabId}`)
+    this.saveBlobToStorage(tabId, tabsetId, thumbnail)
     this.updateStorageQuote().catch((err) => console.warn('error with updateStorageQuote', err))
     return Promise.resolve()
   }
 
-  async getThumbnail(tabId: string): Promise<string> {
-    const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
+  async getThumbnail(tabId: string, userId: string): Promise<string> {
+    const url = `users/${userId}/thumbnails/${tabId}`
+    console.log(`getting thumbnail for ${url}`)
+    const storageReference = ref(FirebaseServices.getStorage(), url)
     const res = await getBytes(storageReference)
     var decoder = new TextDecoder('utf-8')
     return decoder.decode(res)
@@ -26,16 +28,27 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
 
   async deleteThumbnail(tabId: string): Promise<void> {
     const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
+    console.log(`deleting thumbnail for ${storageReference.fullPath}`)
     await deleteObject(storageReference)
     await this.updateStorageQuote()
     return Promise.resolve()
   }
 
-  private saveBlobToStorage(tabId: string, data: string) {
+  private saveBlobToStorage(tabId: string, tabsetId: string, data: string) {
+    const metadata: any = {
+      contentType: 'application/octet-stream',
+      customMetadata: {
+        tabsetId: tabsetId,
+      },
+    }
+    console.log('metadata', metadata)
     const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
-    uploadString(storageReference, data).catch((err: any) => {
-      console.warn('Uploaded thumbnail error', err)
-    })
+    console.log('storageReference', storageReference)
+    uploadString(storageReference, data, StringFormat.RAW, metadata)
+      .then(() => console.log(`uploaded thumbnail, length ${data.length}`))
+      .catch((err: any) => {
+        console.warn('Uploaded thumbnail error', err)
+      })
     return tabId
   }
 

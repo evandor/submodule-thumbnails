@@ -38,7 +38,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
   }
 
   // TODO remove expires logic
-  async saveThumbnail(tabId: string, thumbnail: string): Promise<void> {
+  async saveThumbnail(tabId: string, tabsetId: string, thumbnail: string): Promise<void> {
     return this.db
       .put(this.STORE_IDENT, thumbnail, tabId)
       .then(() => {
@@ -47,7 +47,7 @@ class IndexedDbThumbnailsPersistence implements ThumbnailsPersistence {
       .catch((err) => console.error(err))
   }
 
-  getThumbnail(tabId: string): Promise<string> {
+  getThumbnail(tabId: string, userId: string): Promise<string> {
     return this.db.get(this.STORE_IDENT, tabId)
   }
 
