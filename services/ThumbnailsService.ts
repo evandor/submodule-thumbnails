@@ -51,7 +51,7 @@ export function useThumbnailsService() {
 
       var oc = document.createElement('canvas')
       var octx = oc.getContext('2d')
-      let quality = useSettingsStore().thumbnailQuality as number
+      let quality = useSettingsStore().thumbnailQuality
       oc.width = Math.round((img.width * 0.5 * quality) / 100)
       oc.height = Math.round((img.height * 0.5 * quality) / 100)
       // @ts-expect-error TODO
