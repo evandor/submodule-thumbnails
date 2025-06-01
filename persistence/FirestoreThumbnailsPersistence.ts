@@ -19,11 +19,16 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
 
   async getThumbnail(tabId: string, userId: string): Promise<string> {
     const url = `users/${userId}/thumbnails/${tabId}`
-    console.log(`getting thumbnail for ${url}`)
-    const storageReference = ref(FirebaseServices.getStorage(), url)
-    const res = await getBytes(storageReference)
-    var decoder = new TextDecoder('utf-8')
-    return decoder.decode(res)
+    try {
+      //console.log(`getting thumbnail for ${url}`)
+      const storageReference = ref(FirebaseServices.getStorage(), url)
+      const res = await getBytes(storageReference)
+      const decoder = new TextDecoder('utf-8')
+      return decoder.decode(res)
+    } catch (err: any) {
+      console.error('***', err)
+      return Promise.reject(`no thumbnail found for '${url}': ${err}`)
+    }
   }
 
   async deleteThumbnail(tabId: string): Promise<void> {
@@ -43,7 +48,7 @@ class FirestoreThumbnailsPersistence extends ThumbnailsPersistence {
     }
     console.log('metadata', metadata)
     const storageReference = ref(FirebaseServices.getStorage(), `users/${useAuthStore().user.uid}/thumbnails/${tabId}`)
-    console.log('storageReference', storageReference)
+    // console.log('storageReference', storageReference, data)
     uploadString(storageReference, data, StringFormat.RAW, metadata)
       .then(() => console.log(`uploaded thumbnail, length ${data.length}`))
       .catch((err: any) => {
