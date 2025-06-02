@@ -20,7 +20,6 @@ export function useThumbnailsService() {
   }
 
   const getThumbnailFor = (tabId: string | undefined, userId: string) => {
-    //console.log('hier', tabId, userId, db)
     return tabId && db ? db.getThumbnail(tabId, userId) : Promise.reject(`no thumbnail for tabId ${tabId}`)
   }
 
