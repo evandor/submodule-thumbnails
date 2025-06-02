@@ -40,7 +40,7 @@ export function useThumbnailsService() {
       console.log('dataUrl was undefined')
       return
     }
-    console.log(`capturing thumbnail for ${tabId}, original length ${Math.round(dataUrl.length / 1024) + 'kB'}`)
+    console.log(`capturing thumbnail for ${tabId}, original size ${Math.round(dataUrl.length / 1024) + 'kB'}`)
 
     var img = new Image()
 
@@ -51,13 +51,15 @@ export function useThumbnailsService() {
 
       var oc = document.createElement('canvas')
       var octx = oc.getContext('2d')
-      let quality = useSettingsStore().thumbnailQuality
-      oc.width = Math.round((img.width * 0.5 * quality) / 100)
-      oc.height = Math.round((img.height * 0.5 * quality) / 100)
+      let quality = 0.5 * useSettingsStore().thumbnailQuality
+      oc.width = Math.round((img.width * 0.7 * quality) / 100)
+      oc.height = Math.round((img.height * 0.7 * quality) / 100)
       // @ts-expect-error TODO
       octx.drawImage(img, 0, 0, oc.width, oc.height)
 
-      //console.log(`capturing ${oc.width}x${oc.height} thumbnail for ${sender.tab?.id}, ${Math.round(oc.toDataURL().length / 1024)}kB`)
+      console.log(
+        `capturing ${oc.width}x${oc.height} thumbnail with quality ${useSettingsStore().thumbnailQuality}, ${Math.round(oc.toDataURL().length / 1024)}kB`,
+      )
       saveThumbnailFor(tabId, tabsetId, oc.toDataURL())
       //sendResponse({imgSrc: dataUrl});
     }
